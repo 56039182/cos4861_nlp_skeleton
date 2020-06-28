@@ -48,4 +48,19 @@ class DistanceCalculator:
         :param target: The target string
         :return: The scalar distance between the source and target.
         """
-        raise NotImplementedError('Distance calculation not implemented yet')
+        tempAr = [[0 for x in range(len(target) + 1)] for x in range(len(source) + 1)] 
+  
+        for i in range(len(source) + 1): 
+            for j in range(len(target) + 1): 
+                if i == 0: 
+                    tempAr[i][j] = j * self._insert_cost
+                elif j == 0: 
+                    tempAr[i][j] = i * self._deletion_cost
+                elif source[i-1] == target[j-1]: 
+                    tempAr[i][j] = tempAr[i-1][j-1] * self._subst_cost
+                else: 
+                    tempAr[i][j] = 1 + min(tempAr[i][j-1] * self._insert_cost, 
+                                       tempAr[i-1][j] * self._deletion_cost,
+                                       tempAr[i-1][j-1] * self._subst_cost)
+  
+        return tempAr[len(source)][len(target)] 
